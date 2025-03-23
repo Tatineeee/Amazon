@@ -1,5 +1,5 @@
 import { products } from '../data/products.js';
-import { cart, removeItem } from '../data/cart.js';
+import { cart, removeItem, updateDeliveryOptions } from '../data/cart.js';
 import formatCurrency from './utils/money.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 import { deliveryOptions } from '../data/deliveryOptions.js';
@@ -72,7 +72,9 @@ function deliveryOptionsHTML(matchingProduct, cartItem) {
 
         const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
         html += `
-        <div class="delivery-option">
+        <div class="delivery-option js-delivery-option" data-product-id="${
+            matchingProduct.id
+        }" data-delivery-option-id="${deliveryOption.id}">
             <input
                 type="radio"
                 ${isChecked ? 'checked' : ''}
@@ -97,5 +99,12 @@ document.querySelectorAll('.js-delete').forEach((link) => {
         const container = document.querySelector(`.js-cart-item-container-${productId}`);
         container.remove();
         // console.log(container);
+    });
+});
+
+document.querySelectorAll('.js-delivery-option').forEach((element) => {
+    element.addEventListener('click', () => {
+        const { productId, deliveryOptionId } = element.dataset;
+        updateDeliveryOptions(productId, deliveryOptionId);
     });
 });
